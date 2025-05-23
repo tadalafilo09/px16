@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerando seu acesso...</title>
+    <style>
+        :root {
+            --primary-color: #ff6b81;
+            --secondary-color: #8e44ad;
+            --background-color: #1a1a2e;
+            --text-color: #f0f0f0;
+            --accent-color: #ff9a8b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            border: 2px solid var(--primary-color);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+        }
+        
+        .loader {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            margin: 20px auto;
+        }
+        
+        .loader:after {
+            content: " ";
+            display: block;
+            width: 64px;
+            height: 64px;
+            margin: 8px;
+            border-radius: 50%;
+            border: 6px solid var(--primary-color);
+            border-color: var(--primary-color) transparent var(--primary-color) transparent;
+            animation: loader 1.2s linear infinite;
+        }
+        
+        @keyframes loader {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .error-message {
+            color: #ff4757;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px solid #ff4757;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Preparando seu acesso VIP</h1>
+        <p>Estamos gerando seu código de acesso exclusivo. Aguarde um momento...</p>
+        <div class="loader"></div>
+        <div id="errorMessage" class="error-message">
+            Ocorreu um erro ao gerar seu código. Por favor, tente novamente mais tarde.
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Valor fixo para esta página
+            const valor = 16;
+            
+            // URL do backend (nova URL do Glitch)
+            const backendUrl = 'https://local-clover-paneer.glitch.me/gerar-codigo/' + valor;
+            
+            // Função para gerar o código
+            function gerarCodigo() {
+                fetch(backendUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status) {
+                            // Código gerado com sucesso, redirecionar para a página de obrigado
+                            window.location.href = 'obrigado-16.html?codigo=' + data.code;
+                        } else {
+                            // Erro ao gerar código
+                            document.getElementById('errorMessage').style.display = 'block';
+                            document.getElementById('errorMessage').textContent = data.message || 'Erro ao gerar código de acesso.';
+                            document.querySelector('.loader').style.display = 'none';
+                        }
+                    })
+                    .catch(error => {
+                        // Erro na requisição
+                        console.error('Erro ao gerar código:', error);
+                        document.getElementById('errorMessage').style.display = 'block';
+                        document.querySelector('.loader').style.display = 'none';
+                    });
+            }
+            
+            // Gerar código automaticamente após 1 segundo
+            setTimeout(gerarCodigo, 1000);
+        });
+    </script>
+</body>
+</html>
